@@ -12,8 +12,9 @@ import java.util.Date;
 
 @Component
 public class CalculatorImpl implements ICalculator {
-    private static final int daysInYearNum = 366;
-    private static final ArrayList<LocalDate> holidaysList;
+    private static final float avgDaysInMonthNum = 29.3F; // avg number of the days in a month
+    //private static final int daysInYearNum = 366;
+    private static final ArrayList<LocalDate> holidaysList; //the list of holidays for 2024
     static {
         holidaysList = new ArrayList<>();
         holidaysList.add(LocalDate.of(2024,1,1));
@@ -36,18 +37,18 @@ public class CalculatorImpl implements ICalculator {
         holidaysList.add(LocalDate.of(2024,12,30));
         holidaysList.add(LocalDate.of(2024,12,31));
     }
-    @Override
-    public VacPayment calculateVacationPay(BigDecimal wage, long vacationDays) {
-        BigDecimal vacationPayment, dailyWage;
-        int workDays;
 
-        workDays = daysInYearNum - holidaysList.size();
-        dailyWage = wage.divide(BigDecimal.valueOf(workDays),2, RoundingMode.HALF_UP);
-        vacationPayment = dailyWage.multiply(BigDecimal.valueOf(vacationDays));
+    @Override
+    public VacPayment calculateVacationPay(BigDecimal wage, long vacationDays) { //calculates final vacation payment
+        BigDecimal vacationPayment, dailyWage;
+
+        //workDays = daysInYearNum - holidaysList.size(); //commented - using avg monthly wage instead of annual income
+        dailyWage = wage.divide(BigDecimal.valueOf(avgDaysInMonthNum),2, RoundingMode.HALF_UP); //calculating daily wage
+        vacationPayment = dailyWage.multiply(BigDecimal.valueOf(vacationDays)); //calculating vacation payment based on avg daily wage and number of vacation days
         return new VacPayment(vacationPayment);
     }
     @Override
-    public long vacationLenCalc(Date vacationStart, int vacationDays) {
+    public long vacationLenCalc(Date vacationStart, int vacationDays) { //calculates days of vacation considering holidays
         long vacTotalDaysRange;
         LocalDate vacEnd, vacStart;
         Calendar calendarVE = Calendar.getInstance();
@@ -58,7 +59,7 @@ public class CalculatorImpl implements ICalculator {
         vacEnd = calendarVE.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         vacStart = vacationStart.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        for (LocalDate day : holidaysList)
+        for (LocalDate day : holidaysList) //looping through the list of holidays to check if any of them are occur during vacation
             if (day.isAfter(vacStart) && day.isBefore(vacEnd)) {
                 vacTotalDaysRange--;
             }

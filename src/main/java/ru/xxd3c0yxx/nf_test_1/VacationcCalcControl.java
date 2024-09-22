@@ -18,8 +18,8 @@ public class VacationcCalcControl {
     @GetMapping("/calculate")
     public VacPayment getVacPayment(@RequestParam("avgWage") BigDecimal avgWage, @RequestParam("vacationDays") int vacationDays, @RequestParam(required = false)String vacationStart) throws ParseException {
         long vacDays;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-        if (vacationStart!=null)
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH); // eg. 01-Jun-2024
+        if (vacationStart!=null) //if additional parameter 'start date of the vacation' is used
             vacDays = calculator.vacationLenCalc(formatter.parse(vacationStart), vacationDays);
         else
             vacDays = vacationDays;
