@@ -2,37 +2,40 @@ package ru.xxd3c0yxx.nf_test_1;
 
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class CalculatorImpl implements ICalculator {
     private static final int daysInYearNum = 366;
-    private static final ArrayList<GregorianCalendar> holidaysList;
+    private static final ArrayList<LocalDate> holidaysList;
     static {
         holidaysList = new ArrayList<>();
-        holidaysList.add(new GregorianCalendar(2024, Calendar.JANUARY,1));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,2));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,3));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,4));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,5));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,6));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,7));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JANUARY,8));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.FEBRUARY,23));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.MARCH,8));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.APRIL,29));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.APRIL,30));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.MAY,1));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.MAY,9));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.MAY,10));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.JUNE,12));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.NOVEMBER,4));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.DECEMBER,30));
-        holidaysList.add(new GregorianCalendar(2024,Calendar.DECEMBER,31));
+        holidaysList.add(LocalDate.of(2024,1,1));
+        holidaysList.add(LocalDate.of(2024,1,2));
+        holidaysList.add(LocalDate.of(2024,1,3));
+        holidaysList.add(LocalDate.of(2024,1,4));
+        holidaysList.add(LocalDate.of(2024,1,5));
+        holidaysList.add(LocalDate.of(2024,1,6));
+        holidaysList.add(LocalDate.of(2024,1,7));
+        holidaysList.add(LocalDate.of(2024,1,8));
+        holidaysList.add(LocalDate.of(2024,2,23));
+        holidaysList.add(LocalDate.of(2024,3,8));
+        holidaysList.add(LocalDate.of(2024,4,29));
+        holidaysList.add(LocalDate.of(2024,4,30));
+        holidaysList.add(LocalDate.of(2024,5,1));
+        holidaysList.add(LocalDate.of(2024,5,9));
+        holidaysList.add(LocalDate.of(2024,5,10));
+        holidaysList.add(LocalDate.of(2024,6,12));
+        holidaysList.add(LocalDate.of(2024,11,4));
+        holidaysList.add(LocalDate.of(2024,12,30));
+        holidaysList.add(LocalDate.of(2024,12,31));
     }
 
     public CalculatorImpl() {
@@ -48,26 +51,19 @@ public class CalculatorImpl implements ICalculator {
     @Override
     public long vacationLenCalc(Date vacationStart, int vacationDays) {
         long vacTotalDaysRange;
-        Date vacationEnd;
+        LocalDate vacEnd, vacStart;
         Calendar calendarVE = Calendar.getInstance();
 
-        vacTotalDaysRange = TimeUnit.MILLISECONDS.toDays(vacationStart.getTime())+vacationDays;
+        vacTotalDaysRange = vacationDays;
         calendarVE.setTime(vacationStart);
         calendarVE.add(Calendar.DATE,vacationDays);
-        vacationEnd = calendarVE.getTime();
+        vacEnd = calendarVE.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        vacStart = vacationStart.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        if (vacTotalDaysRange>0) {
-            for (GregorianCalendar day : holidaysList) {
-                if (day.after(vacationStart) && day.before(vacationEnd)) {
-                    vacTotalDaysRange--;
-                }
+        for (LocalDate day : holidaysList)
+            if (day.isAfter(vacStart) && day.isBefore(vacEnd)) {
+                vacTotalDaysRange--;
             }
-        }
-        if (vacTotalDaysRange>0) {
-            return vacTotalDaysRange;
-        }
-        else{
-            return 0;
-        }
+        return (vacTotalDaysRange>0) ? vacTotalDaysRange : 0;
     }
 }
