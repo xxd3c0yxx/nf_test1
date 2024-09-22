@@ -2,14 +2,13 @@ package ru.xxd3c0yxx.nf_test_1;
 
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class CalculatorImpl implements ICalculator {
@@ -37,15 +36,14 @@ public class CalculatorImpl implements ICalculator {
         holidaysList.add(LocalDate.of(2024,12,30));
         holidaysList.add(LocalDate.of(2024,12,31));
     }
-
-    public CalculatorImpl() {
-    }
-
     @Override
-    public VacPayment calculateVacationPay(double wage, long vacationDays) {
-        double vacationPayment;
+    public VacPayment calculateVacationPay(BigDecimal wage, long vacationDays) {
+        BigDecimal vacationPayment, dailyWage;
+        int workDays;
 
-        vacationPayment = (wage / (daysInYearNum - holidaysList.size())) * vacationDays;
+        workDays = daysInYearNum - holidaysList.size();
+        dailyWage = wage.divide(BigDecimal.valueOf(workDays),2, RoundingMode.HALF_UP);
+        vacationPayment = dailyWage.multiply(BigDecimal.valueOf(vacationDays));
         return new VacPayment(vacationPayment);
     }
     @Override

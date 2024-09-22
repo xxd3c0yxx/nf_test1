@@ -4,10 +4,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Locale;
 
 @RestController
@@ -17,7 +16,7 @@ public class VacationcCalcControl {
         this.calculator = calculator;
     }
     @GetMapping("/calculate")
-    public VacPayment getVacPayment(@RequestParam("avgWage") double avgWage, @RequestParam("vacationDays") int vacationDays, @RequestParam(required = false)String vacationStart) throws ParseException {
+    public VacPayment getVacPayment(@RequestParam("avgWage") BigDecimal avgWage, @RequestParam("vacationDays") int vacationDays, @RequestParam(required = false)String vacationStart) throws ParseException {
         long vacDays;
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         if (vacationStart!=null)

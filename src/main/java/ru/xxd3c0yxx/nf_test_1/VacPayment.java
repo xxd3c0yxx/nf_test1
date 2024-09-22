@@ -1,19 +1,21 @@
 package ru.xxd3c0yxx.nf_test_1;
 
+import java.math.BigDecimal;
+
 public class VacPayment
 {
-    private double vacationPayment;
+    private BigDecimal vacationPayment;
 
-    public VacPayment(double vacationPayment) {
+    public VacPayment(BigDecimal vacationPayment) {
         this.vacationPayment = vacationPayment;
     }
     public VacPayment()
     {
     }
-    public double getVacationPayment() {
+    public BigDecimal getVacationPayment() {
         return vacationPayment;
     }
-    public void setVacationPayment(double vacationPayment) {
+    public void setVacationPayment(BigDecimal vacationPayment) {
         this.vacationPayment = vacationPayment;
     }
 }
